@@ -1,0 +1,16 @@
+__pycache__/
+.vs/
+*.db
+*.out
+*.page
+*.kwp
+*.bak
+*.backup
+*.err
+*.log
+virtualenv/
+
+.reports/
+coverage/
+mocks/
+
