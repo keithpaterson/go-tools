@@ -1,23 +1,22 @@
 package env
 
 import (
-	testenv "github.com/keithpaterson/go-tools/test/env"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Env Tag Parser", func() {
 	var (
-		noEnv      = testenv.New().Unset("ENV_VALUE").Unset("ENV_TEST_VALUE")
-		baseEnv    = testenv.New().Set("ENV_VALUE", 1).Unset("ENV_TEST_VALUE")
-		testEnv    = testenv.New().Set("ENV_VALUE", 1).Set("ENV_TEST_VALUE", 100)
-		badBaseEnv = testenv.New().Set("ENV_VALUE", "BAD").Unset("ENV_TEST_VALUE")
-		badTestEnv = testenv.New().Set("ENV_VALUE", 1).Set("ENV_TEST_VALUE", "EVIL")
+		noEnv      = New().Unset("ENV_VALUE").Unset("ENV_TEST_VALUE")
+		baseEnv    = New().Set("ENV_VALUE", 1).Unset("ENV_TEST_VALUE")
+		testEnv    = New().Set("ENV_VALUE", 1).Set("ENV_TEST_VALUE", 100)
+		badBaseEnv = New().Set("ENV_VALUE", "BAD").Unset("ENV_TEST_VALUE")
+		badTestEnv = New().Set("ENV_VALUE", 1).Set("ENV_TEST_VALUE", "EVIL")
 	)
 
 	Context("ResolveEnv", func() {
 		DescribeTable("ensure ResolveEnv call ResolveEnvWithName with empty name",
-			func(testEnv testenv.Setup, input int, expectedValue int, expectedErr error) {
+			func(testEnv Setup, input int, expectedValue int, expectedErr error) {
 				// Arrange
 				type TestStruct struct {
 					Value int `envp:"env=value,default=10"`
@@ -141,7 +140,7 @@ var _ = Describe("Env Tag Parser", func() {
 			type TestStruct struct {
 				Value int `envp:"env=foo_value,default=10"`
 			}
-			origEnv := testenv.New().Set("ENV_FOO_VALUE", 1).Set("ENV_TEST_FOO_VALUE", 100).Apply()
+			origEnv := New().Set("ENV_FOO_VALUE", 1).Set("ENV_TEST_FOO_VALUE", 100).Apply()
 			defer origEnv.Apply()
 
 			// Act
@@ -155,7 +154,7 @@ var _ = Describe("Env Tag Parser", func() {
 
 		Context("signed integers", func() {
 			DescribeTable("will convert signed int",
-				func(testEnv testenv.Setup, input int, expectedValue int, expectedErr error) {
+				func(testEnv Setup, input int, expectedValue int, expectedErr error) {
 					// Arrange
 					type TestStruct struct {
 						Value int `envp:"env=value,default=10"`
@@ -184,7 +183,7 @@ var _ = Describe("Env Tag Parser", func() {
 			)
 
 			DescribeTable("will convert signed int16",
-				func(testEnv testenv.Setup, expectedValue int16, expectedErr error) {
+				func(testEnv Setup, expectedValue int16, expectedErr error) {
 					// Arrange
 					type TestStruct struct {
 						Value int16 `envp:"env=value,default=10"`
@@ -212,7 +211,7 @@ var _ = Describe("Env Tag Parser", func() {
 			)
 
 			DescribeTable("will convert signed int32",
-				func(testEnv testenv.Setup, expectedValue int32, expectedErr error) {
+				func(testEnv Setup, expectedValue int32, expectedErr error) {
 					// Arrange
 					type TestStruct struct {
 						Value int32 `envp:"env=value,default=10"`
@@ -240,7 +239,7 @@ var _ = Describe("Env Tag Parser", func() {
 			)
 
 			DescribeTable("will convert signed int64",
-				func(testEnv testenv.Setup, expectedValue int64, expectedErr error) {
+				func(testEnv Setup, expectedValue int64, expectedErr error) {
 					// Arrange
 					type TestStruct struct {
 						Value int64 `envp:"env=value,default=10"`
@@ -270,7 +269,7 @@ var _ = Describe("Env Tag Parser", func() {
 
 		Context("unsigned integers", func() {
 			DescribeTable("will convert unsigned int",
-				func(testEnv testenv.Setup, expectedValue uint, expectedErr error) {
+				func(testEnv Setup, expectedValue uint, expectedErr error) {
 					// Arrange
 					type TestStruct struct {
 						Value uint `envp:"env=value,default=10"`
@@ -298,7 +297,7 @@ var _ = Describe("Env Tag Parser", func() {
 			)
 
 			DescribeTable("will convert unsigned int16",
-				func(testEnv testenv.Setup, expectedValue uint16, expectedErr error) {
+				func(testEnv Setup, expectedValue uint16, expectedErr error) {
 					// Arrange
 					type TestStruct struct {
 						Value uint16 `envp:"env=value,default=10"`
@@ -326,7 +325,7 @@ var _ = Describe("Env Tag Parser", func() {
 			)
 
 			DescribeTable("will convert unsigned int32",
-				func(testEnv testenv.Setup, expectedValue uint32, expectedErr error) {
+				func(testEnv Setup, expectedValue uint32, expectedErr error) {
 					// Arrange
 					type TestStruct struct {
 						Value uint32 `envp:"env=value,default=10"`
@@ -354,7 +353,7 @@ var _ = Describe("Env Tag Parser", func() {
 			)
 
 			DescribeTable("will convert unsigned int64",
-				func(testEnv testenv.Setup, expectedValue uint64, expectedErr error) {
+				func(testEnv Setup, expectedValue uint64, expectedErr error) {
 					// Arrange
 					type TestStruct struct {
 						Value uint64 `envp:"env=value,default=10"`
@@ -384,13 +383,13 @@ var _ = Describe("Env Tag Parser", func() {
 
 		Context("floating point", func() {
 			var (
-				baseEnv    = testenv.New().Set("ENV_VALUE", 1.1).Unset("ENV_TEST_VALUE")
-				testEnv    = testenv.New().Set("ENV_VALUE", 1.1).Set("ENV_TEST_VALUE", 100.1)
-				badBaseEnv = testenv.New().Set("ENV_VALUE", "BAD").Unset("ENV_TEST_VALUE")
-				badTestEnv = testenv.New().Set("ENV_VALUE", 1.1).Set("ENV_TEST_VALUE", "EVIL")
+				baseEnv    = New().Set("ENV_VALUE", 1.1).Unset("ENV_TEST_VALUE")
+				testEnv    = New().Set("ENV_VALUE", 1.1).Set("ENV_TEST_VALUE", 100.1)
+				badBaseEnv = New().Set("ENV_VALUE", "BAD").Unset("ENV_TEST_VALUE")
+				badTestEnv = New().Set("ENV_VALUE", 1.1).Set("ENV_TEST_VALUE", "EVIL")
 			)
 			DescribeTable("will convert float32",
-				func(testEnv testenv.Setup, expectedValue float32, expectedErr error) {
+				func(testEnv Setup, expectedValue float32, expectedErr error) {
 					// Arrange
 					type TestStruct struct {
 						Value float32 `envp:"env=value,default=10.1"`
@@ -418,7 +417,7 @@ var _ = Describe("Env Tag Parser", func() {
 			)
 
 			DescribeTable("will convert float64",
-				func(testEnv testenv.Setup, expectedValue float64, expectedErr error) {
+				func(testEnv Setup, expectedValue float64, expectedErr error) {
 					// Arrange
 					type TestStruct struct {
 						Value float64 `envp:"env=value,default=10.1"`
@@ -448,13 +447,13 @@ var _ = Describe("Env Tag Parser", func() {
 
 		Context("boolean", func() {
 			var (
-				baseEnv    = testenv.New().Set("ENV_VALUE", true).Unset("ENV_TEST_VALUE")
-				testEnv    = testenv.New().Set("ENV_VALUE", true).Set("ENV_TEST_VALUE", false)
-				badBaseEnv = testenv.New().Set("ENV_VALUE", "BAD").Unset("ENV_TEST_VALUE")
-				badTestEnv = testenv.New().Set("ENV_VALUE", true).Set("ENV_TEST_VALUE", "EVIL")
+				baseEnv    = New().Set("ENV_VALUE", true).Unset("ENV_TEST_VALUE")
+				testEnv    = New().Set("ENV_VALUE", true).Set("ENV_TEST_VALUE", false)
+				badBaseEnv = New().Set("ENV_VALUE", "BAD").Unset("ENV_TEST_VALUE")
+				badTestEnv = New().Set("ENV_VALUE", true).Set("ENV_TEST_VALUE", "EVIL")
 			)
 			DescribeTable("will convert bool",
-				func(testEnv testenv.Setup, expectedValue bool, expectedErr error) {
+				func(testEnv Setup, expectedValue bool, expectedErr error) {
 					// Arrange
 					type TestStruct struct {
 						Value bool `envp:"env=value,default=false"`
@@ -484,11 +483,11 @@ var _ = Describe("Env Tag Parser", func() {
 
 		Context("strings", func() {
 			var (
-				baseEnv = testenv.New().Set("ENV_VALUE", "foo").Unset("ENV_TEST_VALUE")
-				testEnv = testenv.New().Set("ENV_VALUE", "foo").Set("ENV_TEST_VALUE", "bar")
+				baseEnv = New().Set("ENV_VALUE", "foo").Unset("ENV_TEST_VALUE")
+				testEnv = New().Set("ENV_VALUE", "foo").Set("ENV_TEST_VALUE", "bar")
 			)
 			DescribeTable("will convert string",
-				func(testEnv testenv.Setup, expectedValue string, expectedErr error) {
+				func(testEnv Setup, expectedValue string, expectedErr error) {
 					// Arrange
 					type TestStruct struct {
 						Value string `envp:"env=value,default=eric"`
@@ -516,12 +515,12 @@ var _ = Describe("Env Tag Parser", func() {
 
 		Context("nested structs", func() {
 			var (
-				noEnv   = testenv.New().Unset("ENV_VALUE").Unset("ENV_TEST_VALUE").Unset("ENV_FAB").Unset("ENV_TEST_FAB")
-				baseEnv = testenv.New().Set("ENV_VALUE", 10).Unset("ENV_TEST_VALUE").Set("ENV_FAB", "tastic").Unset("ENV_TEST_FAB")
-				testEnv = testenv.New().Set("ENV_VALUE", 10).Set("ENV_TEST_VALUE", 100).Unset("ENV_FAB").Set("ENV_TEST_FAB", "ulous")
+				noEnv   = New().Unset("ENV_VALUE").Unset("ENV_TEST_VALUE").Unset("ENV_FAB").Unset("ENV_TEST_FAB")
+				baseEnv = New().Set("ENV_VALUE", 10).Unset("ENV_TEST_VALUE").Set("ENV_FAB", "tastic").Unset("ENV_TEST_FAB")
+				testEnv = New().Set("ENV_VALUE", 10).Set("ENV_TEST_VALUE", 100).Unset("ENV_FAB").Set("ENV_TEST_FAB", "ulous")
 			)
 			DescribeTable("will convert nested structs",
-				func(testEnv testenv.Setup, expectedValue int, expectedFab string, expectedErr error) {
+				func(testEnv Setup, expectedValue int, expectedFab string, expectedErr error) {
 					// Arrange
 					type InnerStruct struct {
 						Fab string `envp:"env=fab,default=four"`
