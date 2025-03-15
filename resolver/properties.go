@@ -8,11 +8,11 @@ type propertiesResolver struct {
 	ResolverImpl
 }
 
-func NewPropertiesResolver(root *rootResolver) *propertiesResolver {
-	return &propertiesResolver{ResolverImpl{root: root}}
+func NewPropertiesResolver() *propertiesResolver {
+	return &propertiesResolver{}
 }
 
-func (r *propertiesResolver) resolve(name string, token string) (string, bool) {
+func (r *propertiesResolver) Resolve(name string, token string) (string, bool) {
 	if name != "prop" {
 		return token, false
 	}

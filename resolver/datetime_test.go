@@ -30,10 +30,13 @@ var _ = Describe("Date/Time Resolver", func() {
 		ok    bool
 	}
 	var (
+		//root     *rootResolver
 		resolver *dateTimeResolver
 	)
 	BeforeEach(func() {
-		resolver = NewDateTimeResolver(NewResolver(&ResolverConfig{}))
+		//root = NewResolver(&ResolverConfig{})
+		resolver = NewDateTimeResolver()
+		//resolver.root = root
 		resolver.nowFn = testNow
 	})
 
@@ -48,7 +51,7 @@ var _ = Describe("Date/Time Resolver", func() {
 				useLocal = true
 
 				// Act
-				actual, ok := resolver.resolve("time", token)
+				actual, ok := resolver.Resolve("time", token)
 
 				// Assert
 				Expect(actual).To(Equal(expect.value))
@@ -70,7 +73,7 @@ var _ = Describe("Date/Time Resolver", func() {
 		DescribeTable("date",
 			func(token string, expect expectation) {
 				// Act
-				actual, ok := resolver.resolve("date", token)
+				actual, ok := resolver.Resolve("date", token)
 
 				// Assert
 				Expect(actual).To(Equal(expect.value))
@@ -90,7 +93,7 @@ var _ = Describe("Date/Time Resolver", func() {
 		DescribeTable("datetime",
 			func(token string, expect expectation) {
 				// Act
-				actual, ok := resolver.resolve("datetime", token)
+				actual, ok := resolver.Resolve("datetime", token)
 
 				// Assert
 				Expect(actual).To(Equal(expect.value))
@@ -109,7 +112,7 @@ var _ = Describe("Date/Time Resolver", func() {
 		DescribeTable("epoch",
 			func(token string, expect expectation) {
 				// Act
-				actual, ok := resolver.resolve("epoch", token)
+				actual, ok := resolver.Resolve("epoch", token)
 
 				// Assert
 				Expect(actual).To(Equal(expect.value))
@@ -130,7 +133,7 @@ var _ = Describe("Date/Time Resolver", func() {
 		DescribeTable("time",
 			func(token string, expect expectation) {
 				// Act
-				actual, ok := resolver.resolve("time", token)
+				actual, ok := resolver.Resolve("time", token)
 
 				// Assert
 				Expect(actual).To(Equal(expect.value))
@@ -152,7 +155,7 @@ var _ = Describe("Date/Time Resolver", func() {
 		DescribeTable("date",
 			func(token string, expect expectation) {
 				// Act
-				actual, ok := resolver.resolve("date", token)
+				actual, ok := resolver.Resolve("date", token)
 
 				// Assert
 				Expect(actual).To(Equal(expect.value))
@@ -172,7 +175,7 @@ var _ = Describe("Date/Time Resolver", func() {
 		DescribeTable("datetime",
 			func(token string, expect expectation) {
 				// Act
-				actual, ok := resolver.resolve("datetime", token)
+				actual, ok := resolver.Resolve("datetime", token)
 
 				// Assert
 				Expect(actual).To(Equal(expect.value))
@@ -191,7 +194,7 @@ var _ = Describe("Date/Time Resolver", func() {
 		DescribeTable("epoch",
 			func(token string, expect expectation) {
 				// Act
-				actual, ok := resolver.resolve("epoch", token)
+				actual, ok := resolver.Resolve("epoch", token)
 
 				// Assert
 				Expect(actual).To(Equal(expect.value))
@@ -206,7 +209,7 @@ var _ = Describe("Date/Time Resolver", func() {
 
 	It("will ignore requests for invalid token name", func() {
 		// Act
-		actual, ok := resolver.resolve("crumb", "now + 6D")
+		actual, ok := resolver.Resolve("crumb", "now + 6D")
 
 		// Assert
 		Expect(ok).To(BeFalse())

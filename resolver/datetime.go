@@ -38,14 +38,13 @@ type dateTimeResolver struct {
 	nowFn func() time.Time
 }
 
-func NewDateTimeResolver(root *rootResolver) *dateTimeResolver {
+func NewDateTimeResolver() *dateTimeResolver {
 	return &dateTimeResolver{
-		ResolverImpl{root: root},
-		time.Now,
+		nowFn: time.Now,
 	}
 }
 
-func (r *dateTimeResolver) resolve(name string, value string) (string, bool) {
+func (r *dateTimeResolver) Resolve(name string, value string) (string, bool) {
 	var err error
 	var result string
 	changed := true

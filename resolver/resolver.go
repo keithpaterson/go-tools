@@ -17,18 +17,15 @@ var (
 
 // A Resolver is used to convert property tokens in the form '${type:value}' into actual data.
 type Resolver interface {
-	resolve(name string, token string) (string, bool)
+	Resolve(name string, token string) (string, bool)
+
+	setRoot(root *rootResolver)
 }
 
 // base implementation for a resolver
 type ResolverImpl struct {
 	root *rootResolver
 }
-
-//type Resolver interface {
-//	// resolves all tokens in the string and returns the result
-//	Resolve(input string) (string, error)
-//}
 
 type rootResolver struct {
 	config    *ResolverConfig
@@ -41,18 +38,19 @@ func NewResolver(cfg *ResolverConfig) *rootResolver {
 
 func (r *rootResolver) WithStandardResolvers() *rootResolver {
 	return r.
-		WithResolver("env", NewEnvResolver(r)).
-		WithResolver("prop", NewPropertiesResolver(r)).
+		WithResolver("env", NewEnvResolver()).
+		WithResolver("prop", NewPropertiesResolver()).
 		WithDateTimeResolvers()
 }
 
 func (r *rootResolver) WithResolver(name string, resolver Resolver) *rootResolver {
+	resolver.setRoot(r)
 	r.resolvers[name] = resolver
 	return r
 }
 
 func (r *rootResolver) WithDateTimeResolvers() *rootResolver {
-	dtr := NewDateTimeResolver(r)
+	dtr := NewDateTimeResolver()
 	return r.WithResolver("date", dtr).
 		WithResolver("time", dtr).
 		WithResolver("datetime", dtr).
@@ -63,6 +61,10 @@ type resolversMap map[string]Resolver
 
 func (ri *ResolverImpl) resolveValue(value string) string {
 	return ri.root.Resolve(value)
+}
+
+func (ri *ResolverImpl) setRoot(root *rootResolver) {
+	ri.root = root
 }
 
 //
@@ -112,5 +114,5 @@ func (r *rootResolver) resolveToken(token string) (string, bool) {
 		// log a warning?
 		return token, false
 	}
-	return resolver.resolve(name, value)
+	return resolver.Resolve(name, value)
 }

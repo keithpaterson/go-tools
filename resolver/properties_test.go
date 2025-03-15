@@ -18,10 +18,10 @@ var _ = Describe("Property Resolver", func() {
 	BeforeEach(func() {
 		cfg = &ResolverConfig{}
 		root = NewResolver(cfg)
-		resolver = NewPropertiesResolver(root.WithResolver("env", NewEnvResolver(root)))
+		resolver = NewPropertiesResolver()
 
 		// must register myself with root to support recursive lookups
-		root.WithResolver("prop", resolver)
+		root.WithResolver("env", NewEnvResolver()).WithResolver("prop", resolver)
 	})
 
 	DescribeTable("resolve",
@@ -31,7 +31,7 @@ var _ = Describe("Property Resolver", func() {
 
 			// Act & Assert
 			for index, token := range tokens {
-				actual, ok := resolver.resolve("prop", token)
+				actual, ok := resolver.Resolve("prop", token)
 				Expect(actual).To(Equal(expect[index].value))
 				Expect(ok).To(Equal(expect[index].ok))
 			}
@@ -50,7 +50,7 @@ var _ = Describe("Property Resolver", func() {
 		// Arrange
 
 		// Act
-		actual, ok := resolver.resolve("crumb", "fling")
+		actual, ok := resolver.Resolve("crumb", "fling")
 
 		// Assert
 		Expect(ok).To(BeFalse())

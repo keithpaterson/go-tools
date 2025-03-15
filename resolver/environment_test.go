@@ -18,7 +18,7 @@ var _ = Describe("Environment Resolver", func() {
 	)
 	BeforeEach(func() {
 		root = NewResolver(&ResolverConfig{})
-		resolver = NewEnvResolver(root)
+		resolver = NewEnvResolver()
 
 		// must register myself with root to support recursive lookups
 		root.WithResolver("env", resolver)
@@ -32,7 +32,7 @@ var _ = Describe("Environment Resolver", func() {
 
 			// Act & Assert
 			for index, token := range tokens {
-				actual, ok := resolver.resolve("env", token)
+				actual, ok := resolver.Resolve("env", token)
 				Expect(actual).To(Equal(expect[index].value))
 				Expect(ok).To(Equal(expect[index].ok))
 			}
@@ -50,7 +50,7 @@ var _ = Describe("Environment Resolver", func() {
 		// Arrange
 
 		// Act
-		actual, ok := resolver.resolve("crumb", "fling")
+		actual, ok := resolver.Resolve("crumb", "fling")
 
 		// Assert
 		Expect(ok).To(BeFalse())
