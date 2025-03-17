@@ -72,7 +72,7 @@ jobs:
       - name: Vet Go
         run: go vet --tags testutils ./...
 
-  resweave-utils-sonar:
+  sonar:
     name: Build and check code
     needs: [go-test]
     runs-on: ubuntu-latest
