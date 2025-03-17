@@ -96,8 +96,6 @@ jobs:
           path: .reports/
 
       - name: SonarCloud Scan
-        # disable for now until I either pay sonar or make this public
-        if: false
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
