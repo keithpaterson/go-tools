@@ -22,5 +22,5 @@ func (r *envResolver) Resolve(name string, token string) (string, bool) {
 		return token, false
 	}
 
-	return r.resolveValue(envValue), true
+	return r.ResolveValue(envValue), true
 }

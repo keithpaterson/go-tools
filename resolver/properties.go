@@ -23,5 +23,5 @@ func (r *propertiesResolver) Resolve(name string, token string) (string, bool) {
 	}
 	strVal := fmt.Sprintf("%v", value)
 
-	return r.resolveValue(strVal), true
+	return r.ResolveValue(strVal), true
 }

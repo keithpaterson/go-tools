@@ -15,16 +15,14 @@ var (
 	regToken = regexp.MustCompile(`(?U)\${(.*)}`) // matches a "${type:value}" token, captures "type:token"
 )
 
-// A Resolver is used to convert property tokens in the form '${type:value}' into actual data.
+// Resolver is used to convert text tokens of the form '${type:value}' into actual data.
+//
+// Resolver relies on regular expressions, which may have performance implications depending on the
+// size of the text data you are providing to Resolve().
 type Resolver interface {
 	Resolve(name string, token string) (string, bool)
 
 	setRoot(root *rootResolver)
-}
-
-// base implementation for a resolver
-type ResolverImpl struct {
-	root *rootResolver
 }
 
 type rootResolver struct {
@@ -36,6 +34,8 @@ func NewResolver(cfg *ResolverConfig) *rootResolver {
 	return &rootResolver{config: cfg, resolvers: make(resolversMap)}
 }
 
+// WithStandardResolvers adds the commonly-used resolvers for env, prop, and date/time
+// value resolution.
 func (r *rootResolver) WithStandardResolvers() *rootResolver {
 	return r.
 		WithResolver("env", NewEnvResolver()).
@@ -43,12 +43,14 @@ func (r *rootResolver) WithStandardResolvers() *rootResolver {
 		WithDateTimeResolvers()
 }
 
+// WithResolver adds the named resolver.  Use this to register your custom resolver.
 func (r *rootResolver) WithResolver(name string, resolver Resolver) *rootResolver {
 	resolver.setRoot(r)
 	r.resolvers[name] = resolver
 	return r
 }
 
+// WithDateTimeResolvers adds the built-in date/time resolver
 func (r *rootResolver) WithDateTimeResolvers() *rootResolver {
 	dtr := NewDateTimeResolver()
 	return r.WithResolver("date", dtr).
@@ -59,18 +61,8 @@ func (r *rootResolver) WithDateTimeResolvers() *rootResolver {
 
 type resolversMap map[string]Resolver
 
-func (ri *ResolverImpl) resolveValue(value string) string {
-	return ri.root.Resolve(value)
-}
-
-func (ri *ResolverImpl) setRoot(root *rootResolver) {
-	ri.root = root
-}
-
-//
-// rootResolver
-//
-
+// Resolve will convert tokens into their actual values based on their token-type.
+// Any tokens that cannot be resolved will be left unchanged.
 func (r *rootResolver) Resolve(input string) string {
 	tokens := regToken.FindAllString(input, -1)
 	if tokens == nil {

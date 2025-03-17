@@ -104,15 +104,16 @@ func (r *dateTimeResolver) resolveDateAndTime(value string, defaultFormat string
 	//      the token "${date:now.(DateOnly) + 1M}" becomes "DateOnly", "+" "1M"
 	//      the token "${time:now.(TimeOnly) + 1h}" becomes "TimeOnly", "+" "1M"
 	//      the token "${epoch:now + 30s}" becomes "epoch" "+" "30s"
+
 	// first we need to process any embedded tokens in the value itself.
-	var err error
-	value = r.resolveValue(value)
+	value = r.ResolveValue(value)
 
 	spec, format, op, delta := r.parseTokenValue(value)
 	if format == "" {
 		format = defaultFormat
 	}
 
+	var err error
 	var modifier timeValueModifier
 	if modifier, err = r.toModifier(op, delta); err != nil {
 		return value, err
